@@ -679,6 +679,276 @@ async function adminLogin() {
   console.log("Admin login successful:", data.user.email);
 }
 </script>
+    <!-- Thrishaa Arts Product Dashboard -->
+<div id="craft-dashboard"
+     style="display:none;max-width:600px;margin:30px auto;padding:20px;font-family:Arial,sans-serif;">
+
+  <h2>🎨 Thrishaa Arts Dashboard</h2>
+  <p>Manage your handmade crafts here.</p>
+
+  <h3>Add a Craft</h3>
+
+  <label for="craft-name">Craft Name</label>
+  <input id="craft-name" type="text" placeholder="e.g. Handmade Flower"
+         style="width:100%;padding:10px;box-sizing:border-box;margin:6px 0 12px;">
+
+  <label for="craft-description">Description</label>
+  <textarea id="craft-description" placeholder="Describe your craft"
+            style="width:100%;padding:10px;box-sizing:border-box;margin:6px 0 12px;"></textarea>
+
+  <label for="craft-price">Price (₹)</label>
+  <input id="craft-price" type="number" min="0" step="0.01"
+         placeholder="199"
+         style="width:100%;padding:10px;box-sizing:border-box;margin:6px 0 12px;">
+
+  <label for="craft-image">Image URL (optional for now)</label>
+  <input id="craft-image" type="url" placeholder="Paste image link"
+         style="width:100%;padding:10px;box-sizing:border-box;margin:6px 0 12px;">
+
+  <button id="save-craft"
+          style="padding:12px 20px;cursor:pointer;">
+    Add Craft
+  </button>
+
+  <button id="cancel-edit" type="button"
+          style="display:none;padding:12px;cursor:pointer;">
+    Cancel Edit
+  </button>
+
+  <p id="craft-message" role="status"></p>
+
+  <hr>
+
+  <h3>🛍️ Your Crafts</h3>
+  <div id="craft-list">Loading crafts...</div>
+
+  <button id="admin-logout"
+          style="padding:10px;margin-top:20px;cursor:pointer;">
+    Log Out
+  </button>
+</div>
+
+<script>
+(() => {
+  const dashboard = document.getElementById("craft-dashboard");
+  const message = document.getElementById("craft-message");
+  const list = document.getElementById("craft-list");
+  const saveButton = document.getElementById("save-craft");
+  const cancelButton = document.getElementById("cancel-edit");
+
+  let editingId = null;
+  let adminVerified = false;
+
+  function showMessage(text) {
+    message.textContent = text;
+  }
+
+  function resetForm() {
+    editingId = null;
+    document.getElementById("craft-name").value = "";
+    document.getElementById("craft-description").value = "";
+    document.getElementById("craft-price").value = "";
+    document.getElementById("craft-image").value = "";
+    saveButton.textContent = "Add Craft";
+    cancelButton.style.display = "none";
+  }
+
+  async function verifyAdmin(user) {
+    const { data, error } = await supabaseClient
+      .from("admin_users")
+      .select("user_id")
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    if (error || !data) {
+      adminVerified = false;
+      dashboard.style.display = "none";
+      document.getElementById("admin-message").textContent =
+        "This account is not authorized to manage crafts.";
+      return;
+    }
+
+    adminVerified = true;
+    dashboard.style.display = "block";
+    document.getElementById("admin-message").textContent =
+      "Admin login successful!";
+    await loadCrafts();
+  }
+
+  async function loadCrafts() {
+    if (!adminVerified) return;
+
+    list.textContent = "Loading crafts...";
+
+    const { data, error } = await supabaseClient
+      .from("products")
+      .select("*")
+      .order("id", { ascending: false });
+
+    if (error) {
+      list.textContent = "Could not load crafts: " + error.message;
+      return;
+    }
+
+    list.replaceChildren();
+
+    if (!data || data.length === 0) {
+      list.textContent = "No crafts yet. Add your first craft above!";
+      return;
+    }
+
+    data.forEach(product => {
+      const card = document.createElement("div");
+      card.style.cssText =
+        "border:1px solid #ddd;padding:14px;margin:12px 0;border-radius:8px;";
+
+      const title = document.createElement("h4");
+      title.textContent = product.name || "Unnamed craft";
+      card.appendChild(title);
+
+      if (product.image_url) {
+        const image = document.createElement("img");
+        image.src = product.image_url;
+        image.alt = product.name || "Craft";
+        image.style.cssText = "max-width:100%;max-height:200px;";
+        image.onerror = () => image.remove();
+        card.appendChild(image);
+      }
+
+      const description = document.createElement("p");
+      description.textContent = product.description || "";
+      card.appendChild(description);
+
+      const price = document.createElement("p");
+      price.textContent = "Price: ₹" + product.price;
+      card.appendChild(price);
+
+      const editButton = document.createElement("button");
+      editButton.textContent = "Edit";
+      editButton.style.marginRight = "8px";
+
+      editButton.addEventListener("click", () => {
+        editingId = product.id;
+        document.getElementById("craft-name").value = product.name || "";
+        document.getElementById("craft-description").value =
+          product.description || "";
+        document.getElementById("craft-price").value = product.price ?? "";
+        document.getElementById("craft-image").value =
+          product.image_url || "";
+
+        saveButton.textContent = "Save Changes";
+        cancelButton.style.display = "inline-block";
+        showMessage("Editing: " + (product.name || "craft"));
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+
+      card.appendChild(editButton);
+
+      const deleteButton = document.createElement("button");
+      deleteButton.textContent = "Delete";
+
+      deleteButton.addEventListener("click", async () => {
+        if (!adminVerified ||
+            !window.confirm("Delete this craft permanently?")) return;
+
+        const { error } = await supabaseClient
+          .from("products")
+          .delete()
+          .eq("id", product.id);
+
+        if (error) {
+          showMessage("Delete failed: " + error.message);
+          return;
+        }
+
+        showMessage("Craft deleted.");
+        await loadCrafts();
+      });
+
+      card.appendChild(deleteButton);
+      list.appendChild(card);
+    });
+  }
+
+  saveButton.addEventListener("click", async () => {
+    if (!adminVerified) {
+      showMessage("Please log in with your authorized admin account.");
+      return;
+    }
+
+    const name = document.getElementById("craft-name").value.trim();
+    const description =
+      document.getElementById("craft-description").value.trim();
+    const priceText = document.getElementById("craft-price").value;
+    const image_url =
+      document.getElementById("craft-image").value.trim();
+
+    if (!name || priceText === "" ||
+        !Number.isFinite(Number(priceText)) ||
+        Number(priceText) < 0) {
+      showMessage("Enter a craft name and a valid non-negative price.");
+      return;
+    }
+
+    const product = {
+      name,
+      description,
+      price: Number(priceText),
+      image_url: image_url || null
+    };
+
+    saveButton.disabled = true;
+
+    try {
+      const result = editingId === null
+        ? await supabaseClient.from("products").insert(product)
+        : await supabaseClient.from("products")
+            .update(product).eq("id", editingId);
+
+      if (result.error) {
+        showMessage("Save failed: " + result.error.message);
+        return;
+      }
+
+      showMessage(editingId === null ? "Craft added!" : "Craft updated!");
+      resetForm();
+      await loadCrafts();
+    } finally {
+      saveButton.disabled = false;
+    }
+  });
+
+  cancelButton.addEventListener("click", () => {
+    resetForm();
+    showMessage("");
+  });
+
+  document.getElementById("admin-logout").addEventListener("click",
+    async () => {
+      await supabaseClient.auth.signOut();
+      adminVerified = false;
+      dashboard.style.display = "none";
+      resetForm();
+      document.getElementById("admin-message").textContent = "Logged out.";
+    }
+  );
+
+  supabaseClient.auth.onAuthStateChange((event, session) => {
+    if (session && session.user) {
+      setTimeout(() => verifyAdmin(session.user), 0);
+    } else {
+      adminVerified = false;
+      dashboard.style.display = "none";
+    }
+  });
+
+  supabaseClient.auth.getSession().then(({ data, error }) => {
+    if (!error && data.session) {
+      verifyAdmin(data.session.user);
+    }
+  });
+})();
+</script>
 
 </body>
   </html>
