@@ -625,6 +625,110 @@ supabaseClient
     }
   });
 </script>
+    <!-- Thrishaa Arts Public Shop -->
+<section id="public-shop" style="
+  padding:30px 16px;
+  background:#fff8f2;
+  font-family:Arial,sans-serif;
+  color:#49352c;
+">
+  <div style="text-align:center;margin-bottom:25px;">
+    <h1 style="font-size:32px;margin-bottom:8px;">
+      🎨 Thrishaa Arts
+    </h1>
+    <p style="font-size:16px;color:#795548;">
+      Handmade with love ❤️
+    </p>
+    <h2>Our Handmade Collection</h2>
+    <p>Discover something special, made just for you.</p>
+  </div>
+
+  <div id="public-craft-list" style="
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:20px;
+    max-width:1000px;
+    margin:auto;
+  ">
+    <p>Loading our beautiful crafts...</p>
+  </div>
+</section>
+
+<script>
+async function loadPublicCrafts() {
+  const shop = document.getElementById("public-craft-list");
+
+  const { data, error } = await supabaseClient
+    .from("products")
+    .select("id,name,description,price,image_url")
+    .order("id", { ascending: false });
+
+  if (error) {
+    shop.textContent = "Our crafts could not be loaded. Please try again later.";
+    console.error("Shop loading error:", error.message);
+    return;
+  }
+
+  shop.replaceChildren();
+
+  if (!data || data.length === 0) {
+    shop.textContent = "Our handmade collection is coming soon!";
+    return;
+  }
+
+  data.forEach(product => {
+    const card = document.createElement("article");
+
+    card.style.cssText = `
+      background:white;
+      border-radius:14px;
+      padding:14px;
+      box-shadow:0 3px 12px rgba(0,0,0,0.09);
+      overflow:hidden;
+    `;
+
+    if (product.image_url) {
+      const img = document.createElement("img");
+      img.src = product.image_url;
+      img.alt = product.name || "Handmade craft";
+      img.loading = "lazy";
+
+      img.style.cssText = `
+        width:100%;
+        height:220px;
+        object-fit:cover;
+        border-radius:10px;
+      `;
+
+      img.onerror = () => {
+        img.alt = "Craft image unavailable";
+        img.style.display = "none";
+      };
+
+      card.appendChild(img);
+    }
+
+    const name = document.createElement("h3");
+    name.textContent = product.name || "Handmade Craft";
+    name.style.margin = "14px 0 8px";
+    card.appendChild(name);
+
+    const description = document.createElement("p");
+    description.textContent = product.description || "";
+    description.style.color = "#795548";
+    card.appendChild(description);
+
+    const price = document.createElement("p");
+    price.textContent = "₹" + Number(product.price).toLocaleString("en-IN");
+    price.style.cssText = "font-size:20px;font-weight:bold;color:#a0522d;";
+    card.appendChild(price);
+
+    shop.appendChild(card);
+  });
+}
+
+loadPublicCrafts();
+</script>
     <!-- Thrishaa Arts Admin Login -->
 <div id="admin-panel" style="max-width:400px;margin:30px auto;padding:20px;text-align:center;font-family:Arial;">
   <h2>Thrishaa Arts Admin</h2>
