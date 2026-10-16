@@ -614,7 +614,16 @@ const supabaseClient = window.supabase.createClient(
   SUPABASE_KEY
 );
 
-console.log("Thrishaa Arts connected to Supabase!");
+supabaseClient
+  .from("products")
+  .select("*")
+  .then(({ data, error }) => {
+    if (error) {
+      console.error("Database error:", error.message);
+    } else {
+      console.log("Products loaded:", data);
+    }
+  });
 </script>
 
 </body>
