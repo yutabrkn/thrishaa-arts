@@ -1,1 +1,607 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thrishaa Arts | Handmade with Love</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --pink: #ff4f9a;
+    --purple: #7950d8;
+    --yellow: #ffe66d;
+    --cream: #fffaf5;
+    --dark: #30243b;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: var(--cream);
+    color: var(--dark);
+}
+
+header {
+    padding: 18px 6%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: white;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: 0 3px 15px #0000000d;
+}
+
+.logo {
+    font-size: 21px;
+    font-weight: 900;
+    color: var(--purple);
+}
+
+.logo span {
+    color: var(--pink);
+}
+
+nav a {
+    text-decoration: none;
+    color: var(--dark);
+    font-size: 13px;
+    font-weight: bold;
+    margin-left: 12px;
+}
+
+.hero {
+    padding: 65px 7%;
+    text-align: center;
+    background: linear-gradient(135deg, #ffe1ef, #eee5ff, #fff1bb);
+}
+
+.badge {
+    display: inline-block;
+    padding: 8px 15px;
+    background: white;
+    border-radius: 30px;
+    color: var(--purple);
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.hero h1 {
+    font-size: clamp(38px, 8vw, 65px);
+    line-height: 1.12;
+    margin: 22px 0 15px;
+}
+
+.hero h1 span {
+    color: var(--pink);
+}
+
+.hero p {
+    max-width: 530px;
+    margin: auto;
+    line-height: 1.8;
+    color: #66566e;
+}
+
+.button {
+    display: inline-block;
+    padding: 14px 22px;
+    background: var(--purple);
+    color: white;
+    text-decoration: none;
+    border: none;
+    border-radius: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 22px;
+}
+
+.button:hover {
+    transform: translateY(-2px);
+}
+
+.section {
+    padding: 55px 6%;
+}
+
+.section-heading {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.section-heading h2 {
+    font-size: 30px;
+    margin-bottom: 10px;
+}
+
+.section-heading p {
+    color: #766a7b;
+}
+
+.products {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+    gap: 18px;
+}
+
+.product {
+    background: white;
+    padding: 12px;
+    border-radius: 20px;
+    box-shadow: 0 5px 20px #44304b0b;
+    transition: transform .2s;
+}
+
+.product:hover {
+    transform: translateY(-5px);
+}
+
+.product-art {
+    height: 155px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #ffe4ef, #e9e0ff);
+    border-radius: 15px;
+    font-size: 65px;
+}
+
+.product h3 {
+    margin: 14px 0 7px;
+    font-size: 16px;
+}
+
+.product p {
+    color: #766a7b;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.price {
+    display: block;
+    margin-top: 12px;
+    color: var(--purple);
+    font-size: 20px;
+    font-weight: 900;
+}
+
+.add-button {
+    width: 100%;
+    padding: 11px;
+    margin-top: 12px;
+    border: none;
+    border-radius: 12px;
+    background: #ffdfed;
+    color: #a52361;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.add-button:hover {
+    background: #ffc5df;
+}
+
+.cart-box {
+    background: white;
+    border-radius: 20px;
+    padding: 22px;
+    max-width: 650px;
+    margin: auto;
+    box-shadow: 0 5px 20px #44304b0b;
+}
+
+.cart-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.cart-row button {
+    border: none;
+    background: #ffe1ec;
+    border-radius: 8px;
+    padding: 5px 9px;
+    cursor: pointer;
+}
+
+.cart-total {
+    margin-top: 20px;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+#customerName {
+    width: 100%;
+    padding: 13px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    margin-top: 15px;
+    font: inherit;
+}
+
+.empty {
+    text-align: center;
+    padding: 15px;
+    color: #766a7b;
+}
+
+.about {
+    text-align: center;
+    background: #f0eaff;
+    border-radius: 25px;
+    padding: 35px 20px;
+    line-height: 1.8;
+}
+
+footer {
+    background: var(--dark);
+    color: white;
+    text-align: center;
+    padding: 30px 15px;
+    line-height: 1.8;
+}
+
+footer a {
+    color: #ffd3e7;
+}
+
+#cartCount {
+    background: var(--pink);
+    color: white;
+    padding: 3px 7px;
+    border-radius: 20px;
+}
+
+@media (max-width: 420px) {
+    header {
+        padding: 15px 4%;
+    }
+
+    .logo {
+        font-size: 17px;
+    }
+
+    nav a {
+        margin-left: 7px;
+        font-size: 12px;
+    }
+
+    .section {
+        padding: 40px 4%;
+    }
+
+    .products {
+        gap: 12px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">Thrishaa <span>Arts ♡</span></div>
+
+    <nav>
+        <a href="#home">Home</a>
+        <a href="#shop">Shop</a>
+        <a href="#cart">🛒 <span id="cartCount">0</span></a>
+    </nav>
+</header>
+
+<section class="hero" id="home">
+    <span class="badge">🌈 HANDMADE WITH LOVE</span>
+
+    <h1>Little Crafts.<br><span>Big Happiness!</span> 💐</h1>
+
+    <p>
+        Discover colourful handmade flowers, beautiful bouquets,
+        thoughtful gifts and creative art made with love.
+        Every creation is special, just like you!
+    </p>
+
+    <a href="#shop" class="button">Explore Our Collection ↓</a>
+</section>
+
+<section class="section" id="shop">
+    <div class="section-heading">
+        <h2>Our Happy Creations 🌸</h2>
+        <p>Handmade with love, created to make you smile.</p>
+    </div>
+
+    <div class="products" id="productList"></div>
+</section>
+
+<section class="section" id="cart">
+    <div class="section-heading">
+        <h2>Your Shopping Bag 🛍️</h2>
+        <p>Your favourite creations, all in one place.</p>
+    </div>
+
+    <div class="cart-box">
+        <div id="cartItems">
+            <p class="empty">Your cart is waiting for some love! 💗</p>
+        </div>
+
+        <div class="cart-total">
+            Total: ₹<span id="cartTotal">0</span>
+        </div>
+
+        <input
+            id="customerName"
+            type="text"
+            maxlength="80"
+            placeholder="Your name (optional)"
+            aria-label="Your name"
+        >
+
+        <button
+            class="button"
+            style="width:100%"
+            onclick="orderWhatsApp()"
+        >
+            💚 Order via WhatsApp
+        </button>
+
+        <p style="font-size:12px;color:#766a7b;margin-top:12px;line-height:1.6">
+            Product prices are shown above. Parcel delivery charges and
+            the final order total will be confirmed through WhatsApp.
+        </p>
+    </div>
+</section>
+
+<section class="section" id="about">
+    <div class="about">
+        <h2>Made with Love, Just for You 💖</h2>
+
+        <p>
+            Welcome to Thrishaa Arts, a little world of colourful
+            creativity! From pipe-cleaner flowers and beautiful bouquets
+            to handmade gifts and chart crafts, every piece is made
+            with care and imagination.
+        </p>
+
+        <p>
+            Have a special idea? Message us on WhatsApp to discuss
+            custom creations made just for you!
+        </p>
+    </div>
+</section>
+
+<footer>
+    <h2>Thrishaa Arts 💐</h2>
+    <p>Colourful creations. Handmade happiness.</p>
+    <p>📦 Parcel orders across India</p>
+    <p>Product and delivery details confirmed on WhatsApp.</p>
+    <p style="margin-top:12px">Made with ♡ for craft lovers everywhere.</p>
+</footer>
+
+<script>
+/*
+  DEMO PRODUCTS:
+  Replace these example prices and products with your sister's
+  actual products before publishing the website.
+*/
+
+const products = [
+    {
+        id: 1,
+        name: "Pipe Cleaner Tulips",
+        description: "Cute handmade tulips in colourful designs.",
+        price: 99,
+        emoji: "🌷"
+    },
+    {
+        id: 2,
+        name: "Flower Bouquet",
+        description: "A beautiful handmade bouquet for someone special.",
+        price: 249,
+        emoji: "💐"
+    },
+    {
+        id: 3,
+        name: "Handmade Rose",
+        description: "A lovely handmade flower to brighten someone's day.",
+        price: 79,
+        emoji: "🌹"
+    },
+    {
+        id: 4,
+        name: "Handmade Gift",
+        description: "A creative little gift made with care.",
+        price: 149,
+        emoji: "🎁"
+    },
+    {
+        id: 5,
+        name: "Creative Chart Art",
+        description: "Colourful art and decorations for special occasions.",
+        price: 129,
+        emoji: "🎨"
+    },
+    {
+        id: 6,
+        name: "Custom Flower Set",
+        description: "A colourful flower set made for gifting.",
+        price: 199,
+        emoji: "🌸"
+    }
+];
+
+let cart = [];
+
+function renderProducts() {
+    const list = document.getElementById("productList");
+
+    list.innerHTML = products.map(product => `
+        <article class="product">
+            <div class="product-art" aria-hidden="true">
+                ${product.emoji}
+            </div>
+
+            <h3>${product.name}</h3>
+            <p>${product.description}</p>
+
+            <span class="price">₹${product.price}</span>
+
+            <button
+                class="add-button"
+                onclick="addToCart(${product.id})"
+            >
+                + Add to Cart
+            </button>
+        </article>
+    `).join("");
+}
+
+function addToCart(id) {
+    const product = products.find(item => item.id === id);
+
+    if (!product) return;
+
+    const existing = cart.find(item => item.id === id);
+
+    if (existing) {
+        existing.quantity++;
+    } else {
+        cart.push({
+            ...product,
+            quantity: 1
+        });
+    }
+
+    renderCart();
+}
+
+function changeQuantity(id, amount) {
+    const item = cart.find(product => product.id === id);
+
+    if (!item) return;
+
+    item.quantity += amount;
+
+    if (item.quantity <= 0) {
+        cart = cart.filter(product => product.id !== id);
+    }
+
+    renderCart();
+}
+
+function renderCart() {
+    const cartItems = document.getElementById("cartItems");
+
+    const count = cart.reduce(
+        (total, item) => total + item.quantity,
+        0
+    );
+
+    const total = cart.reduce(
+        (sum, item) => sum + item.price * item.quantity,
+        0
+    );
+
+    document.getElementById("cartCount").textContent = count;
+    document.getElementById("cartTotal").textContent = total;
+
+    if (cart.length === 0) {
+        cartItems.innerHTML =
+            '<p class="empty">Your cart is waiting for some love! 💗</p>';
+        return;
+    }
+
+    cartItems.innerHTML = cart.map(item => `
+        <div class="cart-row">
+            <div>
+                <strong>${item.emoji} ${item.name}</strong>
+                <p>₹${item.price} × ${item.quantity}</p>
+            </div>
+
+            <div>
+                <button
+                    aria-label="Decrease ${item.name} quantity"
+                    onclick="changeQuantity(${item.id}, -1)"
+                >−</button>
+
+                <strong>${item.quantity}</strong>
+
+                <button
+                    aria-label="Increase ${item.name} quantity"
+                    onclick="changeQuantity(${item.id}, 1)"
+                >+</button>
+            </div>
+        </div>
+    `).join("");
+}
+
+function orderWhatsApp() {
+    if (cart.length === 0) {
+        alert("Please add a craft to your cart first! 💐");
+        return;
+    }
+
+    /*
+      IMPORTANT:
+      Replace the placeholder below with your sister's WhatsApp
+      number, including India's country code 91, without + or spaces.
+
+      Example format: 919876543210
+    */
+
+    const whatsappNumber = "YOUR_WHATSAPP_NUMBER";
+
+    if (!/^[1-9]\d{7,14}$/.test(whatsappNumber)) {
+        alert(
+            "The website is almost ready! The owner must add her WhatsApp number before orders can be sent."
+        );
+        return;
+    }
+
+    const name = document.getElementById("customerName").value.trim();
+
+    const lines = cart.map(item =>
+        `${item.name} x ${item.quantity} = ₹${item.price * item.quantity}`
+    );
+
+    const total = cart.reduce(
+        (sum, item) => sum + item.price * item.quantity,
+        0
+    );
+
+    const message = [
+        "Hello Thrishaa Arts! 💐❤️",
+        "",
+        "I'd like to order these handmade crafts:",
+        ...lines,
+        "",
+        `Product subtotal: ₹${total}`,
+        "Please confirm the parcel delivery charges and final total.",
+        "",
+        `Customer name: ${name || "Not provided"}`,
+        "Please let me know the payment options and expected delivery time."
+    ].join("\n");
+
+    const url =
+        "https://wa.me/" +
+        whatsappNumber +
+        "?text=" +
+        encodeURIComponent(message);
+
+    window.open(url, "_blank");
+}
+
+renderProducts();
+renderCart();
+</script>
+
+</body>
+  </html>
